@@ -26,7 +26,7 @@ public class Product {
     public String Description;
     public String EAN13;
 
-    private String ExpiryDate;
+    public String ExpiryDate;
     public Date getExpiryDate(){
         try {
             return getMyDateFormat().parse(ExpiryDate);
@@ -39,16 +39,7 @@ public class Product {
         ExpiryDate = getMyDateFormat().format(date);
     }
 
-    private String ThumbnailSource;
-    public Bitmap getThumbnail(){
-        File imgFile = new  File(ThumbnailSource);
-
-        if(imgFile.exists()){
-
-           return BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-        }
-        return null;
-    }
+    public String ThumbnailSource;
 
     public Product(){
 

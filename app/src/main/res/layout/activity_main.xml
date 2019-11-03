@@ -7,7 +7,7 @@
     tools:context=".MainActivity">
 
     <ListView
-        android:id="@+id/ProductList"
+        android:id="@+id/product_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>

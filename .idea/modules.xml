@@ -4,6 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ExpiteApp.iml" filepath="$PROJECT_DIR$/ExpiteApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/codescanner/codescanner.iml" filepath="$PROJECT_DIR$/codescanner/codescanner.iml" />
+      <module fileurl="file://$PROJECT_DIR$/zbar/zbar.iml" filepath="$PROJECT_DIR$/zbar/zbar.iml" />
     </modules>
   </component>
 </project>

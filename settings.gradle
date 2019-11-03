@@ -1,2 +1,2 @@
-include ':app'
+include ':app', ':codescanner', ':zbar'
 rootProject.name='ExpiteApp'

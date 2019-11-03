@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">ExpiteApp - CZ</string>
+    <string name="app_name">ExpiteApp</string>
+    <string name="add_product_title">Přidat Zboží</string>
+    <string name="scanner_continue">Pokračovat</string>
+    <string name="add_product_expirydate">Datum použitelnosti</string>
+    <string name="add_product_productname">Zadej název zboží</string>
+    <string name="add_product_description">Popis</string>
+    <string name="add_product_save">Uložit</string>
+    <string name="add_product_saveImage">Chyba při ukládání obrázku zboží</string>
+    <string name="barcode_permision">Prosím povolte přístup ke kameře pro funkci čtečky čárových kódu</string>
+    <string name="write_storage_permision">Prosím povolte přístup k zápisu do uložiště pro funkci fotografie zboží</string>
+    <string name="read_storage_permision">Prosím povolte přístup k čtení z uložiště pro funkci fotografie zboží</string>
 </resources>

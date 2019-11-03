@@ -1,76 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="100dp"
     android:weightSum="100"
     card_view:cardUseCompatPadding="true">
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="25"
-        android:orientation="horizontal"
-        android:weightSum="100">
 
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="5" />
+    <ImageView
+        android:id="@+id/product_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_gravity="center"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="0dp"
+        android:adjustViewBounds="true"
+        android:maxWidth="75dp"
+        android:maxHeight="75dp" />
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="90"
-            card_view:srcCompat="@mipmap/ic_launcher" />
+    <TextView
+        android:id="@+id/product_ean"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_toLeftOf="@id/delete_icon"
+        android:layout_toRightOf="@id/product_icon"
+        android:textColor="@color/EANTextColor" />
 
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="5" />
-    </LinearLayout>
+    <TextView
+        android:id="@+id/product_name"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_below="@id/product_ean"
+        android:layout_marginLeft="10dp"
+        android:layout_toLeftOf="@id/delete_icon"
+        android:layout_toRightOf="@id/product_icon"
+        android:textSize="18sp" />
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="75"
-        android:orientation="vertical"
-        android:weightSum="100">
+    <TextView
+        android:id="@+id/product_date"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_below="@id/product_name"
+        android:layout_marginLeft="10dp"
+        android:layout_toLeftOf="@id/delete_icon"
+        android:layout_toRightOf="@id/product_icon"
+        android:textColor="@color/EANTextColor" />
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="10" />
+    <ImageView
+        android:id="@+id/delete_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:clickable="true"
+        android:src="@drawable/ic_delete_black_24dp" />
 
-        <TextView
-            android:id="@+id/ProductDate"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="20"
-            android:text="TextView"
-            android:textColor="#ADADAD" />
-
-        <TextView
-            android:id="@+id/ProductName"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="40"
-            android:text="TextView"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/ProductEAN"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="20"
-            android:text="TextView"
-            android:textColor="#ADADAD" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="10" />
-    </LinearLayout>
-</LinearLayout>
+</RelativeLayout>
