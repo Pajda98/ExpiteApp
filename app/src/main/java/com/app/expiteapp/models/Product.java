@@ -21,23 +21,9 @@ import java.util.List;
 
 public class Product {
 
-    public Long Id;
+    public Long Id = 0l;
     public String Name;
-    public String Description;
     public String EAN13;
-
-    public String ExpiryDate;
-    public Date getExpiryDate(){
-        try {
-            return getMyDateFormat().parse(ExpiryDate);
-        }
-        catch (ParseException ex){
-            return null;
-        }
-    }
-    public void setExpiryDate(Date date){
-        ExpiryDate = getMyDateFormat().format(date);
-    }
 
     public String ThumbnailSource;
 
@@ -45,18 +31,12 @@ public class Product {
 
     }
 
-    private DateFormat getMyDateFormat(){
-       return new SimpleDateFormat("yyyy-mm-dd") ;
-    }
-
     public long insert(SQLiteDatabase db)
     {
         ContentValues values = new ContentValues();
         values.put(ExpiryContract.ProductEntry.NAME, Name);
-        values.put(ExpiryContract.ProductEntry.DESCRIPTION, Description);
         values.put(ExpiryContract.ProductEntry.THUMBNAIL, ThumbnailSource);
         values.put(ExpiryContract.ProductEntry.EAN13, EAN13);
-        values.put(ExpiryContract.ProductEntry.EXPIRYDATE, ExpiryDate);
 
        return db.insert(ExpiryContract.ProductEntry.TABLE_NAME, null, values);
 
@@ -80,9 +60,7 @@ public class Product {
         String[] projection = {
                 BaseColumns._ID,
                 ExpiryContract.ProductEntry.NAME,
-                ExpiryContract.ProductEntry.DESCRIPTION,
                 ExpiryContract.ProductEntry.EAN13,
-                ExpiryContract.ProductEntry.EXPIRYDATE,
                 ExpiryContract.ProductEntry.THUMBNAIL
         };
 
@@ -102,14 +80,67 @@ public class Product {
             Product product = new Product();
             product.Id = cursor.getLong(0);
             product.Name = cursor.getString(1);
-            product.Description = cursor.getString(2);
-            product.EAN13 = cursor.getString(3);
-            product.ExpiryDate = cursor.getString(4);
-            product.ThumbnailSource = cursor.getString(5);
+            product.EAN13 = cursor.getString(2);
+            product.ThumbnailSource = cursor.getString(3);
             result.add(product);
         }
         cursor.close();
 
         return result;
+    }
+
+    public static Product search(SQLiteDatabase db, String column, String value)
+    {
+        String[] projection = {
+                BaseColumns._ID,
+                ExpiryContract.ProductEntry.NAME,
+                ExpiryContract.ProductEntry.EAN13,
+                ExpiryContract.ProductEntry.THUMBNAIL
+        };
+
+        String selection = column + " = ?";
+        String[] selectionArgs = { value };
+
+        Cursor cursor = db.query(
+                ExpiryContract.ProductEntry.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+
+        Product result = null;
+
+        while(cursor.moveToNext()) {
+            result = new Product();
+            result.Id = cursor.getLong(0);
+            result.Name = cursor.getString(1);
+            result.EAN13 = cursor.getString(2);
+            result.ThumbnailSource = cursor.getString(3);
+        }
+        cursor.close();
+
+        return result;
+    }
+
+    public int update(SQLiteDatabase db){
+
+        ContentValues values = new ContentValues();
+        values.put(ExpiryContract.ProductEntry.NAME, Name);
+        values.put(ExpiryContract.ProductEntry.THUMBNAIL, ThumbnailSource);
+        values.put(ExpiryContract.ProductEntry.EAN13, EAN13);
+
+        String selection = ExpiryContract.ProductEntry._ID + " = ?";
+        String[] selectionArgs = { Long.toString(Id) };
+
+
+        return db.update(
+                ExpiryContract.ProductEntry.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs);
+
     }
 }

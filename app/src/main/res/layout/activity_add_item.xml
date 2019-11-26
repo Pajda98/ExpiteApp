@@ -83,7 +83,7 @@
                 android:inputType="none" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/description"
+                android:id="@+id/notes"
                 style="@style/DescriptionTextInputLayoutStyle"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
@@ -99,12 +99,12 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <EditText
-                    android:id="@+id/description_field"
+                    android:id="@+id/notes_field"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@null"
                     android:gravity="top"
-                    android:hint="@string/add_product_description"
+                    android:hint="@string/add_product_notes"
                     android:inputType="textMultiLine"
                     android:overScrollMode="always"
                     android:padding="15dp"

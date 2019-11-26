@@ -26,14 +26,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.app.expiteapp.database.ExpiryContract;
+import com.app.expiteapp.models.ExpiryProduct;
 import com.app.expiteapp.models.Product;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -54,7 +62,7 @@ public class AddItem extends AppCompatActivity {
 
     Uri uri = Uri.EMPTY;
 
-    Product makroProduct;
+    Product loadedProduct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,13 +92,17 @@ public class AddItem extends AppCompatActivity {
             }
         });
 
-        if(!EAN.equals("")){
-            GetMakroProduct(EAN);
-
-            if (makroProduct != null) {
+        if(!EAN.equals("") && !EAN.contains("EAN")){
+            loadedProduct = Product.search(MainActivity.DB_HELPER.getReadableDatabase(), ExpiryContract.ProductEntry.EAN13, EAN);
+            if(loadedProduct == null){
+                GetMakroProduct(EAN);
+            }
+            if (loadedProduct != null) {
                 EditText NameText = findViewById(R.id.name);
-                NameText.setText(makroProduct.Name);
+                NameText.setText(loadedProduct.Name);
 
+                uri = Uri.parse(loadedProduct.ThumbnailSource);
+                UpdateProductPhoto();
             }
         }
 
@@ -105,9 +117,25 @@ public class AddItem extends AppCompatActivity {
             public void run() {
                 try  {
                     Document makroDocument = Jsoup.connect("https://sortiment.makro.cz/cs/search/?q=" + EAN).get();
-                    makroProduct = new Product();
                     Elements elements = makroDocument.select("div[class=product product-incart]");
-                    makroProduct.Name = elements.select("h3[class=product-title]").select("a").text();
+                    if (elements.size() > 0) {
+                        loadedProduct = new Product();
+                        loadedProduct.Name = elements.select("h3[class=product-title]").select("a").text();
+
+
+                        URL url = new URL(elements.select("a[class=product-photo]").select("img").attr("src"));
+                        InputStream in = new BufferedInputStream(url.openStream());
+                        File image = createImageFile(EAN);
+                        OutputStream out = new BufferedOutputStream(new FileOutputStream(image));
+
+                        for ( int i; (i = in.read()) != -1; ) {
+                            out.write(i);
+                        }
+                        in.close();
+                        out.close();
+
+                        loadedProduct.ThumbnailSource = Uri.fromFile(image).toString();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -123,29 +151,32 @@ public class AddItem extends AppCompatActivity {
         }
     }
 
+    private File createImageFile(String EAN){
+        try {
+            String imageFileName;
+            if (EAN.toString().equals("")) {
+                imageFileName = UUID.randomUUID().toString();
+            } else {
+                imageFileName = "EAN" + EAN;
+            }
+            File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+            return File.createTempFile(imageFileName,
+                    ".jpg",
+                    storageDir
+            );
+        }
+        catch(IOException e){
+            return null;
+        }
+    }
+
     private void GetProductImage(){
         TextView EANtext = findViewById(R.id.ean);
         if (getIntent().resolveActivity(getPackageManager()) != null) {
-            try {
-                String imageFileName;
-                if (EANtext.getText().toString().equals("")) {
-                    imageFileName = UUID.randomUUID().toString();
-                } else {
-                    imageFileName = "EAN" + EANtext.getText().toString();
-                }
-                File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-                File image = File.createTempFile(imageFileName,
-                        ".jpg",
-                        storageDir
-                );
-
-                uri = Uri.fromFile(image);
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
-            } catch (IOException e) {
-                Toast.makeText(getApplicationContext(), R.string.add_product_saveImage, Toast.LENGTH_SHORT).show();
-            }
+            uri = Uri.fromFile(createImageFile(EANtext.getText().toString()));
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+            startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
         }
     }
 
@@ -225,22 +256,42 @@ public class AddItem extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText NameText = findViewById(R.id.name);
-                TextView EANText = findViewById(R.id.ean);
-                EditText DescriptionText = findViewById(R.id.description_field);
-
-
-                Product prod = new Product();
-                prod.Name = NameText.getText().toString();
-                prod.Description = DescriptionText.getText().toString();
-                prod.EAN13 = EANText.getText().toString();
-                prod.setExpiryDate(myCalendar.getTime());
-                prod.ThumbnailSource = uri.toString();
-                prod.insert(MainActivity.DB_HELPER.getWritableDatabase());
+                saveExpiryProduct();
                 setResult(RESULT_OK);
                 finish();
             }
         });
+    }
+
+    private void saveExpiryProduct(){
+        EditText NameText = findViewById(R.id.name);
+        TextView EANText = findViewById(R.id.ean);
+        EditText NotesText = findViewById(R.id.notes_field);
+
+        Long productId = 0l;
+        if (loadedProduct == null || loadedProduct.Id == 0l) {
+            Product p = new Product();
+            String ean = EANText.getText().toString();
+            if (ean.equals("")){
+                ean = "EAN" + UUID.randomUUID().toString();
+            }
+            p.Name = NameText.getText().toString();
+            p.EAN13 = ean;
+            p.ThumbnailSource = uri.toString();
+            productId = p.insert(MainActivity.DB_HELPER.getWritableDatabase());
+        }else{
+            loadedProduct.Name = NameText.getText().toString();
+            loadedProduct.EAN13 = EANText.getText().toString();
+            loadedProduct.ThumbnailSource = uri.toString();
+            loadedProduct.update(MainActivity.DB_HELPER.getWritableDatabase());
+            productId = loadedProduct.Id;
+        }
+
+        ExpiryProduct ep = new ExpiryProduct();
+        ep.Notes = NotesText.getText().toString();
+        ep.setExpiryDate(myCalendar.getTime());
+        ep.ProductId = productId;
+        ep.insert(MainActivity.DB_HELPER.getWritableDatabase());
     }
 
     @Override

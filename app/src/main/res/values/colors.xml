@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimary">#545775</color>
+    <color name="colorPrimaryDark">#555772</color>
+    <color name="colorAccent">#90b494</color>
 
     <!-- Barcode Scanner    -->
     <color name="actionbar_opacity">#33000000</color>
@@ -10,4 +10,6 @@
     <!--    EAN text color-->
     <color name="EANTextColor">#ADADAD</color>
 
+    <!--    ProductItemColor-->
+    <color name="ProductItemColor">#FFFFFF</color>
 </resources>

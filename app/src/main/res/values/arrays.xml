@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!--    Delays-->
+    <array name="images">
+        <item>@drawable/ic_donut_large_red_18dp</item>
+        <item>@drawable/ic_donut_large_yellow_18dp</item>
+        <item>@drawable/ic_donut_large_blue_18dp</item>
+        <item>@drawable/ic_donut_large_green_18dp</item>
+    </array>
+
+
+</resources>

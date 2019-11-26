@@ -4,6 +4,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import android.Manifest;
 import android.app.Activity;
@@ -15,6 +21,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -22,12 +29,18 @@ import android.widget.Toast;
 
 import com.app.expiteapp.adapters.ProductAdapter;
 import com.app.expiteapp.database.ExpiryDbHelper;
+import com.app.expiteapp.models.LVPItem;
+import com.app.expiteapp.models.ListViewProduct;
 import com.app.expiteapp.models.Product;
+import com.app.expiteapp.models.ProductGroupLevels;
+import com.app.expiteapp.ui.home.HomeFragment;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -48,19 +61,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         DB_HELPER = new ExpiryDbHelper(this);
+        //UpdateProductList();
 
-        UpdateProductList();
+        BottomNavigationView navView = findViewById(R.id.nav_view);
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.navigation_home, R.id.navigation_shopping_list)
+                .build();
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupWithNavController(navView, navController);
 
     }
 
-    private void UpdateProductList(){
-        //Adapter
-        List<Product> products = Product.getList(DB_HELPER.getReadableDatabase());
-        ListView pl = (ListView)findViewById(R.id.product_list);
-        ProductAdapter adapter = new ProductAdapter(this, R.layout.item_product_layout, products);
-
-        pl.setAdapter(adapter);
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -119,7 +133,13 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(intent, REQUEST_ADD_ITEM_CODE);
         }
         if (requestCode == REQUEST_ADD_ITEM_CODE && resultCode == AppCompatActivity.RESULT_OK){
-            UpdateProductList();
+//            FragmentManager fm = getSupportFragmentManager();
+//            for(Fragment fr : fm.getFragments()){
+//                if(fr instanceof HomeFragment){
+//                    HomeFragment fragment = (HomeFragment)fr;
+//                    fragment.UpdateProductList();
+//                }
+//            }
         }
     }
 

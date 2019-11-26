@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class ExpiryDbHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 5;
     public static final String DATABASE_NAME = "ExpiryApp.db";
 
     public ExpiryDbHelper(Context context) {
@@ -16,6 +16,7 @@ public class ExpiryDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(ExpiryContract.SQL_CREATE_PRODUCTS);
+        db.execSQL(ExpiryContract.SQL_CREATE_EXPIRY_PRODUCTS);
     }
 
     @Override

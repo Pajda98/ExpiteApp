@@ -1,13 +1,23 @@
 <resources>
-    <string name="app_name">ExpiteApp</string>
+    <string name="app_name">ExpiteApp - Products watch</string>
     <string name="add_product_title">Add Product</string>
     <string name="scanner_continue">Continue</string>
     <string name="add_product_expirydate">Expiry date</string>
     <string name="add_product_productname">Enter product name</string>
-    <string name="add_product_description">Description</string>
+    <string name="add_product_notes">Notes</string>
     <string name="add_product_save">Save</string>
     <string name="add_product_saveImage">Error while saving product image</string>
     <string name="barcode_permision">Please grant camera permission to use the Barcode Scanner</string>
     <string name="write_storage_permision">Please grant write storage permission to use the product photo</string>
     <string name="read_storage_permision">Please grant read storage permission to use the product photo</string>
+
+    <!--  Delays  -->
+    <string name="delay_none">After expiry date</string>
+    <string name="delay_less">Less then %d days</string>
+    <string name="delay_more">More then %d days</string>
+
+    <string name="title_home">Home</string>
+    <string name="title_shopping_list">Shopping list</string>
+
+
 </resources>
