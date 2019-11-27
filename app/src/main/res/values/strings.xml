@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">ExpiteApp - Products watch</string>
     <string name="add_product_title">Add Product</string>
+    <string name="edit_product_title">Edit Product</string>
     <string name="scanner_continue">Continue</string>
     <string name="add_product_expirydate">Expiry date</string>
     <string name="add_product_productname">Enter product name</string>
@@ -18,6 +19,11 @@
 
     <string name="title_home">Home</string>
     <string name="title_shopping_list">Shopping list</string>
+
+    <!-- Item context-->
+    <string name="item_edit_product">Edit</string>
+    <string name="item_add_list">Add to list</string>
+    <string name="item_delete_product">Delete</string>
 
 
 </resources>

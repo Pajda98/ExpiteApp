@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.daimajia.swipe.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipable_poduct_item"
+    android:layout_width="match_parent"
+    android:layout_height="100dp">
+
+    <LinearLayout
+        android:id="@+id/swipable_item_context"
+        android:layout_width="180dp"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/add_to_list"
+            android:layout_width="90dp"
+            android:layout_height="match_parent"
+            android:background="#A9CF54"
+            android:orientation="vertical"
+            android:clickable="true"
+            android:focusable="true"
+            android:weightSum="100">
+
+            <ImageView
+                android:id="@+id/add_to_list_image"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="60"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_shopping_basket_white_48dp" />
+
+            <TextView
+                android:id="@+id/add_to_list_text"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="40"
+                android:gravity="center"
+                android:text="@string/item_add_list" />
+        </LinearLayout>
+
+
+<!--        <LinearLayout-->
+<!--            android:id="@+id/edit_product"-->
+<!--            android:layout_width="90dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:background="#70B7BA"-->
+<!--            android:orientation="vertical"-->
+<!--            android:clickable="true"-->
+<!--            android:focusable="true"-->
+<!--            android:weightSum="100">-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/edit_product_image"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="0dp"-->
+<!--                android:layout_weight="60"-->
+<!--                android:scaleType="centerInside"-->
+<!--                android:src="@drawable/ic_edit_white_48dp" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/edit_product_text"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="0dp"-->
+<!--                android:layout_weight="40"-->
+<!--                android:gravity="center"-->
+<!--                android:text="@string/item_edit_product" />-->
+
+<!--        </LinearLayout>-->
+
+        <LinearLayout
+            android:id="@+id/delete_product"
+            android:layout_width="90dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@drawable/ripple"
+            android:clickable="true"
+            android:focusable="true"
+            android:weightSum="100">
+
+<!--            android:background="#F1433F"-->
+            <ImageView
+                android:id="@+id/delete_product_image"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="60"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_delete_white_48dp" />
+
+            <TextView
+                android:id="@+id/delete_poduct_view_text"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="40"
+                android:gravity="center"
+                android:text="@string/item_delete_product" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Surface View Start -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="100"
+            android:background="@color/ProductItemColor">
+
+
+            <ImageView
+                android:id="@+id/product_icon"
+                android:layout_width="85dp"
+                android:layout_height="85dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="7.5dp"
+                android:layout_marginRight="0dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerInside"
+                android:src="@drawable/leg_of_meat" />
+            <!--        android:maxWidth="75dp"-->
+            <!--        android:maxHeight="75dp" -->
+            />
+
+            <TextView
+                android:id="@+id/product_ean"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="7.5dp"
+                android:layout_marginRight="10dp"
+                android:layout_toRightOf="@id/product_icon"
+                android:textColor="@color/EANTextColor" />
+
+            <TextView
+                android:id="@+id/product_name"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_below="@id/product_ean"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_toRightOf="@id/product_icon"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/product_date"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_below="@id/product_name"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_toRightOf="@id/product_icon"
+                android:textColor="@color/EANTextColor" />
+
+            <!--        android:clickable="true"-->
+            <!--        android:src="@drawable/ic_delete_black_24dp" -->
+
+        </RelativeLayout>
+    </LinearLayout>
+
+</com.daimajia.swipe.SwipeLayout>

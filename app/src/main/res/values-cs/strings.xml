@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ExpiteApp - Sledování potravin</string>
-    <string name="add_product_title">Přidat Zboží</string>
+    <string name="add_product_title">Přidat zboží</string>
+    <string name="edit_product_title">Upravit zboží</string>
     <string name="scanner_continue">Pokračovat</string>
     <string name="add_product_expirydate">Datum použitelnosti</string>
     <string name="add_product_productname">Zadej název zboží</string>
@@ -18,4 +19,9 @@
 
     <string name="title_home">Domů</string>
     <string name="title_shopping_list">Nakupní seznam</string>
+
+    <!-- Item context-->
+    <string name="item_edit_product">Upravit</string>
+    <string name="item_add_list">Přidat do seznamu</string>
+    <string name="item_delete_product">Odstranit</string>
 </resources>

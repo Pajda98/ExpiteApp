@@ -1,14 +1,21 @@
 package com.app.expiteapp.adapters;
 
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
@@ -29,8 +36,12 @@ import com.app.expiteapp.models.ExpiryProduct;
 import com.app.expiteapp.models.LVPItem;
 import com.app.expiteapp.models.ListViewProduct;
 import com.app.expiteapp.models.ProductGroupLevels;
+import com.daimajia.swipe.SimpleSwipeListener;
+import com.daimajia.swipe.SwipeLayout;
 
+import java.io.File;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -90,7 +101,7 @@ public class ProductAdapter extends BaseAdapter {
             holder.Image.setImageResource(levels.getExpiryImageResource(product.delayGroup));
         }
         else{
-            convertView = inflater.inflate(R.layout.item_product_layout, parent, false);
+            convertView = inflater.inflate(R.layout.swipable_product_layout, parent, false);
             ProductHolder holder = initHolder(convertView);
             convertView.setTag(holder);
 
@@ -107,7 +118,14 @@ public class ProductAdapter extends BaseAdapter {
         holder.EAN13 = (TextView)row.findViewById(R.id.product_ean);
         holder.Date = (TextView)row.findViewById(R.id.product_date);
         holder.Image = (ImageView)row.findViewById(R.id.product_icon);
-        holder.Delete = (ImageView)row.findViewById(R.id.delete_icon);
+
+        holder.AddToList = (LinearLayout) row.findViewById(R.id.add_to_list);
+//        holder.EditProduct = (LinearLayout)row.findViewById(R.id.edit_product);
+        holder.DeleteProduct = (LinearLayout)row.findViewById(R.id.delete_product);
+
+        holder.productLayout = (SwipeLayout)row.findViewById(R.id.swipable_poduct_item);
+        holder.productLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
+//        holder.productLayout.addDrag(SwipeLayout.DragEdge.Left, row.findViewById(R.id.swipableItemContext));
         return holder;
     }
 
@@ -118,18 +136,68 @@ public class ProductAdapter extends BaseAdapter {
 
         if (!product.productData.ThumbnailSource.equals("")) {
             //if(holder.Image.getDrawable() instanceof BitmapDrawable) ((BitmapDrawable)holder.Image.getDrawable()).getBitmap().recycle();
-            holder.Image.setImageURI(Uri.parse(product.productData.ThumbnailSource));
+
+            //final int THUMBSIZE = 128;
+            try {
+                File file = new File(new URI(product.productData.ThumbnailSource));
+                Bitmap thumbImage = ThumbnailUtils.extractThumbnail(
+                        BitmapFactory.decodeFile(file.getAbsolutePath()),
+                        512 ,
+                        512);
+                holder.Image.setImageBitmap(thumbImage);
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+//            holder.Image.setImageBitmap(Uri.parse(product.productData.ThumbnailSource));
         }else{
 //            int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
 //            holder.Image.setColorFilter(color);
         }
 
-        holder.Delete.setOnClickListener(new View.OnClickListener() {
+        holder.productLayout.addSwipeListener(new SimpleSwipeListener() {
+            @Override
+            public void onStartOpen(SwipeLayout layout) {
+            }
+
+            @Override
+            public void onOpen(SwipeLayout layout) {
+                product.productData.isSwipeLayoutOpen = true;
+            }
+
+            @Override
+            public void onStartClose(SwipeLayout layout) {
+
+            }
+            @Override
+            public void onClose(SwipeLayout layout) {
+                product.productData.isSwipeLayoutOpen = false;
+
+            }
+        });
+        holder.productLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (product.productData.isSwipeLayoutOpen) holder.productLayout.open(false);
+            }
+        });
+
+        holder.AddToList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
+//        holder.EditProduct.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//            }
+//        });
+        holder.DeleteProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 v.startAnimation(AnimationUtils.loadAnimation(context, R.anim.image_view_click));
-                ExpiryProduct.delete(MainActivity.DB_HELPER.getWritableDatabase(), product.productData.ExpiryProductId);
-
+                data.remove(product);
+                notifyDataSetChanged();
             }
         });
     }
@@ -141,7 +209,10 @@ public class ProductAdapter extends BaseAdapter {
         TextView Name;
         TextView EAN13;
         TextView Date;
-        ImageView Delete;
+        LinearLayout AddToList;
+//        LinearLayout EditProduct;
+        LinearLayout DeleteProduct;
+        SwipeLayout productLayout;
     }
 
     static class HeaderHolder

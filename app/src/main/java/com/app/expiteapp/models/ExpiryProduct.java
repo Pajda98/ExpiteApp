@@ -39,6 +39,44 @@ public class ExpiryProduct {
         return new SimpleDateFormat("dd.MM.yyyy") ;
     }
 
+    public static ExpiryProduct get(long id, SQLiteDatabase db)
+    {
+        String[] projection = {
+                BaseColumns._ID,
+                ExpiryContract.ExiryProductEntry.PRODUCT_ID,
+                ExpiryContract.ExiryProductEntry.EXPIRYDATE,
+                ExpiryContract.ExiryProductEntry.NOTES
+        };
+
+        String selection = BaseColumns._ID + " = ?";
+        String[] selectionArgs = { Long.toString(id) };
+
+        Cursor cursor = db.query(
+                ExpiryContract.ExiryProductEntry.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+
+        List<ExpiryProduct> result = new ArrayList<ExpiryProduct>();
+
+        while(cursor.moveToNext()) {
+            ExpiryProduct expiryProduct = new ExpiryProduct();
+            expiryProduct.Id = cursor.getLong(0);
+            expiryProduct.ProductId = cursor.getLong(1);
+            expiryProduct.ExpiryDate = cursor.getString(2);
+            expiryProduct.Notes = cursor.getString(3);
+            result.add(expiryProduct);
+        }
+        cursor.close();
+
+        if(result.size() > 0) return result.get(0);
+        else return null;
+    }
+
     public long insert(SQLiteDatabase db)
     {
         ContentValues values = new ContentValues();
@@ -95,6 +133,23 @@ public class ExpiryProduct {
         cursor.close();
 
         return result;
+    }
+
+    public int update(SQLiteDatabase db){
+
+        ContentValues values = new ContentValues();
+        values.put(ExpiryContract.ExiryProductEntry.EXPIRYDATE, ExpiryDate);
+        values.put(ExpiryContract.ExiryProductEntry.NOTES, Notes);
+
+        String selection = ExpiryContract.ProductEntry._ID + " = ?";
+        String[] selectionArgs = { Long.toString(Id) };
+
+        return db.update(
+                ExpiryContract.ProductEntry.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs);
+
     }
 
 }

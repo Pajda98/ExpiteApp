@@ -124,7 +124,9 @@ public class Product {
 
         return result;
     }
-
+    public static Product get(long id,SQLiteDatabase db){
+        return  search(db, BaseColumns._ID, Long.toString(id));
+    }
     public int update(SQLiteDatabase db){
 
         ContentValues values = new ContentValues();

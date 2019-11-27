@@ -1,9 +1,11 @@
 package com.app.expiteapp.ui.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -13,6 +15,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.app.expiteapp.AddItem;
+import com.app.expiteapp.EditProduct;
 import com.app.expiteapp.MainActivity;
 import com.app.expiteapp.R;
 import com.app.expiteapp.adapters.ProductAdapter;
@@ -40,6 +44,7 @@ public class HomeFragment extends Fragment {
 //            }
 //        });
         UpdateProductList();
+
         return root;
     }
 
@@ -55,6 +60,18 @@ public class HomeFragment extends Fragment {
         List<LVPItem> fullProductList = LVPItem.generateFormProducts(products, getContext());
 
         ListView pl = (ListView)root.findViewById(R.id.product_list);
+        pl.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                LVPItem item = (LVPItem)parent.getItemAtPosition(position);
+                if(item.id != -1) {
+                    Intent intent = new Intent(getContext(), EditProduct.class);
+                    intent.putExtra(EditProduct.EDITITEM_ID, item.id);
+                    startActivity(intent);
+                }
+            }
+        });
+
         ProductAdapter adapter = new ProductAdapter(getContext(), fullProductList);
 
         pl.setAdapter(adapter);

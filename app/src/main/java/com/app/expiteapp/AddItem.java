@@ -47,50 +47,21 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class AddItem extends AppCompatActivity {
-    static final int REQUEST_IMAGE_CAPTURE = 1001;
-
-    private static final int WRITE_STORAGE_PERMISSION = 1;
-    private static final int READ_STORAGE_PERMISSION = 2;
+public class AddItem extends ProductBaseActivity {
 
     final static String ADDITEM_EAN = "additemean";
-
-    DatePickerDialog.OnDateSetListener date;
-    Calendar myCalendar;
-    EditText ExpiryDate;
-
-    Uri uri = Uri.EMPTY;
-
     Product loadedProduct;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_item);
 
-        final Activity activity = this;
         final String EAN = getIntent().getStringExtra(ADDITEM_EAN);
-        final TextView EANtext = findViewById(R.id.ean);
-        EANtext.setText(EAN);
+        EANText.setText(EAN);
 
         setupToolbar();
-        myCalendar = Calendar.getInstance();
-        setupDatePicker();
-
-        ImageView ProductImage = findViewById(R.id.product_image);
-        ProductImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                v.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.image_view_click));
-
-                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_STORAGE_PERMISSION);
-                } else {
-                    GetProductImage();
-                }
-            }
-        });
 
         if(!EAN.equals("") && !EAN.contains("EAN")){
             loadedProduct = Product.search(MainActivity.DB_HELPER.getReadableDatabase(), ExpiryContract.ProductEntry.EAN13, EAN);
@@ -120,8 +91,14 @@ public class AddItem extends AppCompatActivity {
                     Elements elements = makroDocument.select("div[class=product product-incart]");
                     if (elements.size() > 0) {
                         loadedProduct = new Product();
-                        loadedProduct.Name = elements.select("h3[class=product-title]").select("a").text();
-
+                        String name = elements.select("h3[class=product-title]").select("a").text();
+                        Pattern pattern = Pattern.compile("\\s\\d");
+                        Matcher matcher = pattern.matcher(name);
+                        // Check all occurrences
+                        while (matcher.find()) {
+                            name = name.substring(0, matcher.start());
+                        }
+                        loadedProduct.Name = name;
 
                         URL url = new URL(elements.select("a[class=product-photo]").select("img").attr("src"));
                         InputStream in = new BufferedInputStream(url.openStream());
@@ -151,104 +128,13 @@ public class AddItem extends AppCompatActivity {
         }
     }
 
-    private File createImageFile(String EAN){
-        try {
-            String imageFileName;
-            if (EAN.toString().equals("")) {
-                imageFileName = UUID.randomUUID().toString();
-            } else {
-                imageFileName = "EAN" + EAN;
-            }
-            File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-            return File.createTempFile(imageFileName,
-                    ".jpg",
-                    storageDir
-            );
-        }
-        catch(IOException e){
-            return null;
-        }
-    }
-
-    private void GetProductImage(){
-        TextView EANtext = findViewById(R.id.ean);
-        if (getIntent().resolveActivity(getPackageManager()) != null) {
-            uri = Uri.fromFile(createImageFile(EANtext.getText().toString()));
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-            startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,  String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case WRITE_STORAGE_PERMISSION:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    GetProductImage();
-                } else {
-                    Toast.makeText(this, R.string.write_storage_permision, Toast.LENGTH_SHORT).show();
-                }
-                return;
-            case READ_STORAGE_PERMISSION:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    UpdateProductPhoto();
-                } else {
-                    Toast.makeText(this, R.string.read_storage_permision, Toast.LENGTH_SHORT).show();
-                }
-                return;
-        }
-    }
-
-
-    public void setupDatePicker(){
-        ExpiryDate = findViewById(R.id.expiry_date);
-        date = new DatePickerDialog.OnDateSetListener() {
-
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                myCalendar.set(Calendar.YEAR, year);
-                myCalendar.set(Calendar.MONTH, monthOfYear);
-                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateDate();
-            }
-
-        };
-        final Context context = this;
-
-        ExpiryDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showCalendar(context, date);
-            }
-        });
-
-        ExpiryDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus){
-                    showCalendar(context, date);
-                }
-            }
-        });
-    }
-
-    private void showCalendar(Context context,DatePickerDialog.OnDateSetListener date){
-        new DatePickerDialog(context, date, myCalendar
-                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-    }
-
-    private void updateDate(){
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
-        ExpiryDate.setText(format.format(myCalendar.getTime()));
-    }
 
     public void setupToolbar() {
         //top toolbar
         final ActionBar ab = getSupportActionBar();
         if(ab != null) {
             ab.setDisplayHomeAsUpEnabled(true);
+            ab.setTitle(R.string.add_product_title);
         }
 
         //bottom toolbar
@@ -307,16 +193,4 @@ public class AddItem extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void UpdateProductPhoto(){
-        ImageView image = findViewById(R.id.product_image);
-        image.setImageURI(uri);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            UpdateProductPhoto();
-        }
-    }
 }

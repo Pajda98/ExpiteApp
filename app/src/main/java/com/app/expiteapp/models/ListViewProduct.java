@@ -17,6 +17,7 @@ public class ListViewProduct implements Comparable<ListViewProduct> {
     public String EAN13;
     public String ThumbnailSource;
     public String ExpiryDate;
+    public boolean isSwipeLayoutOpen = false;
 
     public Date getExpiryDate() {
         try {
