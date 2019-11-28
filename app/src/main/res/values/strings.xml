@@ -11,6 +11,13 @@
     <string name="barcode_permision">Please grant camera permission to use the Barcode Scanner</string>
     <string name="write_storage_permision">Please grant write storage permission to use the product photo</string>
     <string name="read_storage_permision">Please grant read storage permission to use the product photo</string>
+    <string name="add_shopping_list_item_hint">Add to list</string>
+    <string name="error_makro">Error while obtaining Makro data</string>
+    <string name="notification_title">Warning - expiry date</string>
+    <string name="notification_text">"%s" is near end of expiration date.</string>
+    <string name="notification_big_text">\"%s\" expires on %s</string>
+<!--    <string name="notification_text">Some of your products are near the end of their expiration date.</string>-->
+
 
     <!--  Delays  -->
     <string name="delay_none">After expiry date</string>
@@ -25,5 +32,8 @@
     <string name="item_add_list">Add to list</string>
     <string name="item_delete_product">Delete</string>
 
+    <!-- List item context    -->
+    <string name="list_item_done">Done</string>
+    <string name="list_item_delete">Delete</string>
 
 </resources>

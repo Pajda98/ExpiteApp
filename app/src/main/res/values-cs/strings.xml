@@ -12,6 +12,12 @@
     <string name="barcode_permision">Prosím povolte přístup ke kameře pro funkci čtečky čárových kódu</string>
     <string name="write_storage_permision">Prosím povolte přístup k zápisu do uložiště pro funkci fotografie zboží</string>
     <string name="read_storage_permision">Prosím povolte přístup k čtení z uložiště pro funkci fotografie zboží</string>
+    <string name="add_shopping_list_item_hint">Přidat do seznamu</string>
+    <string name="error_makro">Chyba při získávání dat z Makra</string>
+    <string name="notification_title">Pozor - datum spotřeby</string>
+    <string name="notification_text">"%s" se blíží konec data spotřeby.</string>
+    <string name="notification_big_text">\"%s\" skončí datum spotřeby %s</string>
+<!--    <string name="notification_text">Některému tvému zboží se blíží konec data spotřeby.</string>-->
     <!--  Delays  -->
     <string name="delay_none">Po datu spotřeby</string>
     <string name="delay_less">Méně než %d dní</string>
@@ -24,4 +30,8 @@
     <string name="item_edit_product">Upravit</string>
     <string name="item_add_list">Přidat do seznamu</string>
     <string name="item_delete_product">Odstranit</string>
+    <!-- List item context    -->
+    <string name="list_item_done">Hotovo</string>
+    <string name="list_item_delete">Odstranit</string>
+
 </resources>

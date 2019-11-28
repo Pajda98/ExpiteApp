@@ -141,11 +141,11 @@ public class ExpiryProduct {
         values.put(ExpiryContract.ExiryProductEntry.EXPIRYDATE, ExpiryDate);
         values.put(ExpiryContract.ExiryProductEntry.NOTES, Notes);
 
-        String selection = ExpiryContract.ProductEntry._ID + " = ?";
+        String selection = ExpiryContract.ExiryProductEntry._ID + " = ?";
         String[] selectionArgs = { Long.toString(Id) };
 
         return db.update(
-                ExpiryContract.ProductEntry.TABLE_NAME,
+                ExpiryContract.ExiryProductEntry.TABLE_NAME,
                 values,
                 selection,
                 selectionArgs);

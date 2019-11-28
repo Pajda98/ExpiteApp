@@ -52,4 +52,10 @@
         <item name="boxCornerRadiusTopEnd">0dp</item>
         <item name="boxCornerRadiusTopStart">0dp</item>
     </style>
+
+    <style name="DatePickerColor" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
 </resources>

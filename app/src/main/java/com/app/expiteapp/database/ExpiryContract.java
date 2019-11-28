@@ -44,5 +44,20 @@ public final class ExpiryContract {
         public static final String EXPIRYDATE = "expiry_date";
     }
 
+    public static final String SQL_CREATE_SHOPPING_LIST_ITEM =
+            "CREATE TABLE " + ShoppingListItem.TABLE_NAME + " (" +
+                    ShoppingListItem._ID + " INTEGER PRIMARY KEY," +
+                    ShoppingListItem.NAME + " TEXT NOT NULL," +
+                    ShoppingListItem.DONE + " INTEGER)";
+
+    public static final String SQL_DELETE_SHOPPING_LIST_ITEM =
+            "DROP TABLE IF EXISTS " + ShoppingListItem.TABLE_NAME;
+
+    /* Inner class that defines the table contents */
+    public static class ShoppingListItem implements BaseColumns {
+        public static final String TABLE_NAME = "shopping_list_item";
+        public static final String NAME = "name";
+        public static final String DONE = "done";
+    }
 
 }

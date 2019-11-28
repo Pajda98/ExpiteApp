@@ -13,6 +13,7 @@ public class LVPItem {
     public int delayGroup;
     public boolean isHeader;
     public ListViewProduct productData;
+    public boolean simpleClickShow = false;
 
     public static List<LVPItem> generateFormProducts(List<ListViewProduct> products, Context context){
         ProductGroupLevels levels = new ProductGroupLevels(context);
@@ -21,7 +22,7 @@ public class LVPItem {
         for(int delay : levels.expiryDelays){
             int position = -1;
             for (final ListViewProduct product: products) {
-                if(InDelayCategory(product, delay)) {
+                if(ProductGroupLevels.InDelayCategory(product, delay)) {
                     if(ContainsProduct(fullProductList, product.ExpiryProductId)) continue;
                     if(position == -1) position = fullProductList.size();
                     fullProductList.add(createFromProduct(product));
@@ -64,14 +65,5 @@ public class LVPItem {
         }
         return false;
     }
-    private static boolean InDelayCategory(ListViewProduct product, int delay){
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(product.getExpiryDate());
-        cal.add(Calendar.DATE, -delay);
-        Date dateDelay = cal.getTime();
-        Date dateNow = new Date();
-        return dateNow.after(dateDelay);
-    }
-
 
 }

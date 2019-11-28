@@ -4,9 +4,13 @@
 
     <item
         android:id="@+id/add_product"
-        android:icon="@drawable/ic_add_black_24dp"
+        android:icon="@drawable/ic_add_box_white_48dp"
         android:orderInCategory="1"
         android:title=""
         app:showAsAction="collapseActionView|ifRoom" />
+
+    <item
+        android:id="@+id/check_notification"
+        android:title="Check products" />
 
 </menu>

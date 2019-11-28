@@ -2,6 +2,8 @@ package com.app.codescanner;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.hardware.Camera;
 import android.os.Handler;
@@ -19,6 +21,7 @@ import net.sourceforge.zbar.ImageScanner;
 import net.sourceforge.zbar.Symbol;
 import net.sourceforge.zbar.SymbolSet;
 
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
@@ -88,15 +91,15 @@ public class BarScannerView extends BarcodeScannerView {
             int width = size.width;
             int height = size.height;
 
-            if (DisplayUtils.getScreenOrientation(getContext()) == Configuration.ORIENTATION_PORTRAIT) {
-                int rotationCount = getRotationCount();
-                if (rotationCount == 1 || rotationCount == 3) {
-                    int tmp = width;
-                    width = height;
-                    height = tmp;
-                }
-                data = getRotatedData(data, camera);
-            }
+//            if (DisplayUtils.getScreenOrientation(getContext()) == Configuration.ORIENTATION_PORTRAIT) {
+//                int rotationCount = getRotationCount();
+//                if (rotationCount == 1 || rotationCount == 3) {
+//                    int tmp = width;
+//                    width = height;
+//                    height = tmp;
+//                }
+//                data = getRotatedData(data, camera);
+//            }
 
             Rect rect = getFramingRectInPreview(width, height);
             Image barcode = new Image(width, height, "Y800");

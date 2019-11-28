@@ -8,6 +8,8 @@ import com.app.expiteapp.R;
 import java.lang.reflect.Array;
 import java.text.Format;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 
 public class ProductGroupLevels {
     Context context;
@@ -40,5 +42,14 @@ public class ProductGroupLevels {
             return icons.getResourceId(pos, R.drawable.ic_donut_large_red_18dp);
         }
         return  R.drawable.ic_donut_large_red_18dp;
+    }
+
+    public static boolean InDelayCategory(ListViewProduct product, int delay){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(product.getExpiryDate());
+        cal.add(Calendar.DATE, -delay);
+        Date dateDelay = cal.getTime();
+        Date dateNow = new Date();
+        return dateNow.after(dateDelay);
     }
 }

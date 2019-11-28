@@ -22,27 +22,18 @@ import com.app.expiteapp.R;
 import com.app.expiteapp.adapters.ProductAdapter;
 import com.app.expiteapp.models.LVPItem;
 import com.app.expiteapp.models.ListViewProduct;
+import com.daimajia.swipe.SwipeLayout;
 
 import java.util.List;
 
 public class HomeFragment extends Fragment {
 
-    private HomeViewModel homeViewModel;
-
     private View root;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel =
-                ViewModelProviders.of(this).get(HomeViewModel.class);
         root = inflater.inflate(R.layout.fragment_home, container, false);
-//        final TextView textView = root.findViewById(R.id.text_home);
-//        homeViewModel.getText().observe(this, new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable String s) {
-//                textView.setText(s);
-//            }
-//        });
+        root.clearFocus();
         UpdateProductList();
 
         return root;
@@ -54,21 +45,34 @@ public class HomeFragment extends Fragment {
         super.onResume();
     }
 
+
     public void UpdateProductList() {
         //Adapter
         List<ListViewProduct> products = ListViewProduct.getList(MainActivity.DB_HELPER.getReadableDatabase());
         List<LVPItem> fullProductList = LVPItem.generateFormProducts(products, getContext());
 
         ListView pl = (ListView)root.findViewById(R.id.product_list);
-        pl.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        pl.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 LVPItem item = (LVPItem)parent.getItemAtPosition(position);
                 if(item.id != -1) {
                     Intent intent = new Intent(getContext(), EditProduct.class);
                     intent.putExtra(EditProduct.EDITITEM_ID, item.id);
                     startActivity(intent);
                 }
+                return false;
+            }
+        });
+        pl.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+               LVPItem item =  (LVPItem)parent.getItemAtPosition(position);
+               if (item.simpleClickShow == false && item.isHeader == false) {
+                   item.simpleClickShow = true;
+                   final SwipeLayout swipeLayout = (SwipeLayout) view.findViewById(R.id.swipable_poduct_item);
+                   swipeLayout.open(true);
+               }
             }
         });
 

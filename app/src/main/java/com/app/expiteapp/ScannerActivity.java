@@ -109,7 +109,7 @@ public class ScannerActivity extends AppCompatActivity implements BarScannerView
             public void run() {
                 mScannerView.resumeCameraPreview(ScannerActivity.this);
             }
-        }, 2000);
+        }, 1000);
 
         /*
         Toast.makeText(this, "Contents = " + rawResult.getContents() +

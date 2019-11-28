@@ -26,6 +26,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import java.io.File;
 import java.io.IOException;
@@ -87,28 +88,32 @@ public class ProductBaseActivity extends AppCompatActivity {
     }
 
     protected File createImageFile(String EAN){
-        try {
+//        try {
             String imageFileName;
             if (EAN.toString().equals("")) {
                 imageFileName = UUID.randomUUID().toString();
             } else {
                 imageFileName = "EAN" + EAN;
             }
-            File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-            return File.createTempFile(imageFileName,
-                    ".jpg",
-                    storageDir
-            );
-        }
-        catch(IOException e){
-            return null;
-        }
+            imageFileName += ".jpg";
+            File photo = new File(Environment.getExternalStorageDirectory(),  imageFileName);
+//            File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+//            return File.createTempFile(imageFileName,
+//                    ".jpg",
+//                    storageDir
+//            );
+            return photo;
+//        }
+//        catch(IOException e){
+//            return null;
+//        }
     }
 
     protected void GetProductImage(){
         TextView EANtext = findViewById(R.id.ean);
         if (getIntent().resolveActivity(getPackageManager()) != null) {
-            uri = Uri.fromFile(createImageFile(EANtext.getText().toString()));
+
+            uri = FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", createImageFile(EANtext.getText().toString()));
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
             startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
@@ -148,7 +153,7 @@ public class ProductBaseActivity extends AppCompatActivity {
     }
 
     protected void showCalendar(Context context,DatePickerDialog.OnDateSetListener date){
-        new DatePickerDialog(context, date, myCalendar
+        new DatePickerDialog(context,R.style.DatePickerColor, date, myCalendar
                 .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                 myCalendar.get(Calendar.DAY_OF_MONTH)).show();
     }

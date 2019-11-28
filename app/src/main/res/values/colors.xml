@@ -12,4 +12,8 @@
 
     <!--    ProductItemColor-->
     <color name="ProductItemColor">#FFFFFF</color>
+
+    <!--    Red delete color-->
+    <color name="RedDeleteColor">#F1433F</color>
+    <color name="GreenSuceedColor">#A9CF54</color>
 </resources>

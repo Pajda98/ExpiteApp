@@ -36,6 +36,7 @@ import com.app.expiteapp.models.ExpiryProduct;
 import com.app.expiteapp.models.LVPItem;
 import com.app.expiteapp.models.ListViewProduct;
 import com.app.expiteapp.models.ProductGroupLevels;
+import com.app.expiteapp.models.ShoppingListItem;
 import com.daimajia.swipe.SimpleSwipeListener;
 import com.daimajia.swipe.SwipeLayout;
 
@@ -125,7 +126,7 @@ public class ProductAdapter extends BaseAdapter {
 
         holder.productLayout = (SwipeLayout)row.findViewById(R.id.swipable_poduct_item);
         holder.productLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
-//        holder.productLayout.addDrag(SwipeLayout.DragEdge.Left, row.findViewById(R.id.swipableItemContext));
+        //holder.productLayout.addDrag(SwipeLayout.DragEdge.Left, row.findViewById(R.id.swipableItemContext));
         return holder;
     }
 
@@ -165,9 +166,13 @@ public class ProductAdapter extends BaseAdapter {
             }
 
             @Override
-            public void onStartClose(SwipeLayout layout) {
-
+            public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
+                if(product.simpleClickShow && leftOffset <= -10){
+                    holder.productLayout.close(true);
+                    product.simpleClickShow = false;
+                }
             }
+
             @Override
             public void onClose(SwipeLayout layout) {
                 product.productData.isSwipeLayoutOpen = false;
@@ -184,6 +189,11 @@ public class ProductAdapter extends BaseAdapter {
         holder.AddToList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                holder.productLayout.close(true);
+                ShoppingListItem sli = new ShoppingListItem();
+                sli.Name = product.productData.Name;
+                sli.Done = 0;
+                sli.insert(MainActivity.DB_HELPER.getWritableDatabase());
             }
         });
 //        holder.EditProduct.setOnClickListener(new View.OnClickListener() {
@@ -195,8 +205,20 @@ public class ProductAdapter extends BaseAdapter {
         holder.DeleteProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                v.startAnimation(AnimationUtils.loadAnimation(context, R.anim.image_view_click));
+                holder.productLayout.close(true);
+//                v.startAnimation(AnimationUtils.loadAnimation(context, R.anim.image_view_click));
                 data.remove(product);
+                ExpiryProduct.delete(MainActivity.DB_HELPER.getWritableDatabase(), product.productData.ExpiryProductId);
+                //Delete headers
+                List<LVPItem> deleteList = new ArrayList<LVPItem>();
+                for(int i = 0; i < data.size() - 1; i++){
+                    if(data.get(i).isHeader && data.get(i+1).isHeader){
+                        deleteList.add(data.get(i));
+                    }
+                }
+                for(LVPItem item : deleteList){
+                    data.remove(item);
+                }
                 notifyDataSetChanged();
             }
         });

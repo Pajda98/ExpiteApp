@@ -3,16 +3,18 @@
     package="com.app.expiteapp">
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_PERMISSION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/expiryapp_logo"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/expiryapp_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".EditProduct"></activity>
@@ -26,10 +28,22 @@
         <activity
             android:name=".ScannerActivity"
             android:label="@string/add_product_title"
-            android:theme="@style/AppOverlayTheme" />
+            android:theme="@style/AppOverlayTheme"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".AddItem"
             android:label="@string/add_product_title" />
+
+        <provider
+            android:name=".providers.GenericFileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
+        <service android:name="com.app.expiteapp.services.ProductsService"/>
     </application>
 
 </manifest>

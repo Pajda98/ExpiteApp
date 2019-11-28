@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -66,7 +67,13 @@ public class AddItem extends ProductBaseActivity {
         if(!EAN.equals("") && !EAN.contains("EAN")){
             loadedProduct = Product.search(MainActivity.DB_HELPER.getReadableDatabase(), ExpiryContract.ProductEntry.EAN13, EAN);
             if(loadedProduct == null){
+                ProgressDialog progress = new ProgressDialog(this);
+                progress.setTitle("Loading");
+                progress.setMessage("Wait while loading...");
+                progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+                progress.show();
                 GetMakroProduct(EAN);
+                progress.dismiss();
             }
             if (loadedProduct != null) {
                 EditText NameText = findViewById(R.id.name);
@@ -92,16 +99,17 @@ public class AddItem extends ProductBaseActivity {
                     if (elements.size() > 0) {
                         loadedProduct = new Product();
                         String name = elements.select("h3[class=product-title]").select("a").text();
-                        Pattern pattern = Pattern.compile("\\s\\d");
+                        Pattern pattern = Pattern.compile("\\s\\d+[x]");
                         Matcher matcher = pattern.matcher(name);
                         // Check all occurrences
-                        while (matcher.find()) {
+                        if (matcher.find()) {
                             name = name.substring(0, matcher.start());
                         }
                         loadedProduct.Name = name;
 
                         URL url = new URL(elements.select("a[class=product-photo]").select("img").attr("src"));
-                        InputStream in = new BufferedInputStream(url.openStream());
+                        InputStream inputStream = url.openStream();
+                        InputStream in = new BufferedInputStream(inputStream);
                         File image = createImageFile(EAN);
                         OutputStream out = new BufferedOutputStream(new FileOutputStream(image));
 
@@ -114,6 +122,7 @@ public class AddItem extends ProductBaseActivity {
                         loadedProduct.ThumbnailSource = Uri.fromFile(image).toString();
                     }
                 } catch (Exception e) {
+                    loadedProduct = null;
                     e.printStackTrace();
                 }
             }

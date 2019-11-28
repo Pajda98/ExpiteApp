@@ -13,6 +13,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -33,6 +34,8 @@ import com.app.expiteapp.models.LVPItem;
 import com.app.expiteapp.models.ListViewProduct;
 import com.app.expiteapp.models.Product;
 import com.app.expiteapp.models.ProductGroupLevels;
+import com.app.expiteapp.notifications.NotificationManager;
+import com.app.expiteapp.services.ProductsService;
 import com.app.expiteapp.ui.home.HomeFragment;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.barcode.Barcode;
@@ -63,6 +66,11 @@ public class MainActivity extends AppCompatActivity {
         DB_HELPER = new ExpiryDbHelper(this);
         //UpdateProductList();
 
+        if(!isMyServiceRunning(ProductsService.class)){
+//            Intent intent = new Intent(this, ProductsService.class);
+//            startService(intent);
+        }
+
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -88,6 +96,10 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, clss);
                 startActivityForResult(intent, REQUEST_CODE_READ_CODE);
             }
+        }
+        else if(item.getItemId() == R.id.check_notification){
+            NotificationManager nm = new NotificationManager(this);
+            nm.checkAllNotifications();
         }
 
         return super.onOptionsItemSelected(item);
@@ -158,5 +170,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         DB_HELPER.close();
         super.onDestroy();
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(this.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
