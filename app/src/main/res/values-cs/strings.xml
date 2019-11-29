@@ -17,6 +17,7 @@
     <string name="notification_title">Pozor - datum spotřeby</string>
     <string name="notification_text">"%s" se blíží konec data spotřeby.</string>
     <string name="notification_big_text">\"%s\" skončí datum spotřeby %s</string>
+    <string name="scanner_error">Nejedná se o kód EAN13</string>
 <!--    <string name="notification_text">Některému tvému zboží se blíží konec data spotřeby.</string>-->
     <!--  Delays  -->
     <string name="delay_none">Po datu spotřeby</string>

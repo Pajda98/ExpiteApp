@@ -138,17 +138,13 @@ public class ProductAdapter extends BaseAdapter {
         if (!product.productData.ThumbnailSource.equals("")) {
             //if(holder.Image.getDrawable() instanceof BitmapDrawable) ((BitmapDrawable)holder.Image.getDrawable()).getBitmap().recycle();
 
-            //final int THUMBSIZE = 128;
-            try {
-                File file = new File(new URI(product.productData.ThumbnailSource));
+                File file = new File(product.productData.ThumbnailSource);
                 Bitmap thumbImage = ThumbnailUtils.extractThumbnail(
                         BitmapFactory.decodeFile(file.getAbsolutePath()),
                         512 ,
                         512);
                 holder.Image.setImageBitmap(thumbImage);
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
+
 //            holder.Image.setImageBitmap(Uri.parse(product.productData.ThumbnailSource));
         }else{
 //            int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));

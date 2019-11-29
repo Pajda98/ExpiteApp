@@ -91,15 +91,15 @@ public class BarScannerView extends BarcodeScannerView {
             int width = size.width;
             int height = size.height;
 
-//            if (DisplayUtils.getScreenOrientation(getContext()) == Configuration.ORIENTATION_PORTRAIT) {
-//                int rotationCount = getRotationCount();
-//                if (rotationCount == 1 || rotationCount == 3) {
-//                    int tmp = width;
-//                    width = height;
-//                    height = tmp;
-//                }
-//                data = getRotatedData(data, camera);
-//            }
+            if (DisplayUtils.getScreenOrientation(getContext()) == Configuration.ORIENTATION_PORTRAIT) {
+                int rotationCount = getRotationCount();
+                if (rotationCount == 1 || rotationCount == 3) {
+                    int tmp = width;
+                    width = height;
+                    height = tmp;
+                }
+                data = getRotatedData(data, camera);
+            }
 
             Rect rect = getFramingRectInPreview(width, height);
             Image barcode = new Image(width, height, "Y800");

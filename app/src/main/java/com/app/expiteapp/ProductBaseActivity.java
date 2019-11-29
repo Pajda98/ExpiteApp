@@ -3,10 +3,12 @@ package com.app.expiteapp;
 import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
@@ -29,11 +31,13 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -43,7 +47,8 @@ public class ProductBaseActivity extends AppCompatActivity {
     private static final int WRITE_STORAGE_PERMISSION = 1;
     private static final int READ_STORAGE_PERMISSION = 2;
 
-    Uri uri = Uri.EMPTY;
+//    Uri uri = Uri.EMPTY;
+    String uri = "";
 
     protected  Long productId;
     protected  Long expiryProductId;
@@ -87,36 +92,44 @@ public class ProductBaseActivity extends AppCompatActivity {
         });
     }
 
-    protected File createImageFile(String EAN){
-//        try {
-            String imageFileName;
-            if (EAN.toString().equals("")) {
-                imageFileName = UUID.randomUUID().toString();
-            } else {
-                imageFileName = "EAN" + EAN;
-            }
-            imageFileName += ".jpg";
-            File photo = new File(Environment.getExternalStorageDirectory(),  imageFileName);
-//            File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-//            return File.createTempFile(imageFileName,
-//                    ".jpg",
-//                    storageDir
-//            );
-            return photo;
-//        }
-//        catch(IOException e){
-//            return null;
-//        }
+    protected File createImageFile(){
+        try {
+            // Create an image file name
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String imageFileName = "JPEG_" + timeStamp + "_";
+            File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            File image = null;
+                image = File.createTempFile(
+                        imageFileName,  /* prefix */
+                        ".jpg",         /* suffix */
+                        storageDir      /* directory */
+                );
+            // Save a file: path for use with ACTION_VIEW intents
+            uri = image.getAbsolutePath();
+            return image;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     protected void GetProductImage(){
         TextView EANtext = findViewById(R.id.ean);
         if (getIntent().resolveActivity(getPackageManager()) != null) {
-
-            uri = FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", createImageFile(EANtext.getText().toString()));
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-            startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                // Create the File where the photo should go
+                File photoFile = null;
+                photoFile = createImageFile();
+                // Continue only if the File was successfully created
+                if (photoFile != null) {
+                    Uri photoURI = FileProvider.getUriForFile(this,
+                            this.getApplicationContext().getPackageName() + ".provider",
+                            photoFile);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+                }
+            }
         }
     }
 
@@ -186,18 +199,33 @@ public class ProductBaseActivity extends AppCompatActivity {
     protected void UpdateProductPhoto(){
         ImageView image = findViewById(R.id.product_image);
         if(!uri.toString().equals("")) {
-            File file = null;
-            try {
-                file = new File(new URI(uri.toString()));
-                Bitmap thumbImage = ThumbnailUtils.extractThumbnail(
+              File file = new File(uri);
+              Bitmap thumbImage = ThumbnailUtils.extractThumbnail(
                         BitmapFactory.decodeFile(file.getAbsolutePath()),
                         512 ,
                         512);
                 image.setImageBitmap(thumbImage);
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
         }
+    }
+    public String getRealPathFromURI(Uri contentURI) {
+        String result;
+        Cursor cursor = this.getContentResolver().query(contentURI, null,
+                null, null, null);
+
+        if (cursor == null) { // Source is Dropbox or other similar local file
+            // path
+            result = contentURI.getPath();
+        } else {
+            cursor.moveToFirst();
+            try {
+                int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                result = cursor.getString(idx);
+            } catch (Exception e) {
+                result = "";
+            }
+            cursor.close();
+        }
+        return result;
     }
 
     @Override

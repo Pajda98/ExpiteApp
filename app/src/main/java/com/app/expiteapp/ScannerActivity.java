@@ -99,6 +99,9 @@ public class ScannerActivity extends AppCompatActivity implements BarScannerView
             setResult(RESULT_OK, myIntent);
             finish();
         }
+        else{
+            Toast.makeText(this, R.string.scanner_error, Toast.LENGTH_SHORT).show();
+        }
         // Note:
         // * Wait 2 seconds to resume the preview.
         // * On older devices continuously stopping and resuming camera preview can result in freezing the app.

@@ -16,6 +16,7 @@
     <string name="notification_title">Warning - expiry date</string>
     <string name="notification_text">"%s" is near end of expiration date.</string>
     <string name="notification_big_text">\"%s\" expires on %s</string>
+    <string name="scanner_error">This is not EAN13 code</string>
 <!--    <string name="notification_text">Some of your products are near the end of their expiration date.</string>-->
 
 

@@ -4,53 +4,37 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.ActivityManager;
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.app.expiteapp.adapters.ProductAdapter;
 import com.app.expiteapp.database.ExpiryDbHelper;
-import com.app.expiteapp.models.LVPItem;
-import com.app.expiteapp.models.ListViewProduct;
-import com.app.expiteapp.models.Product;
-import com.app.expiteapp.models.ProductGroupLevels;
 import com.app.expiteapp.notifications.NotificationManager;
-import com.app.expiteapp.services.ProductsService;
-import com.app.expiteapp.ui.home.HomeFragment;
+import com.app.expiteapp.services.ProductAlarmReceiver;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.vision.barcode.Barcode;
-import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     static final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 1001;
     private static final int REQUEST_CODE_READ_CODE = 1002;
     private static final int REQUEST_ADD_ITEM_CODE = 1003;
+    private static final int REQUEST_PRODCUT_ALARM = 1004;
     private static final int CAMERA_PERMISSION = 1;
 
     private Class<?> mClss;
@@ -66,10 +50,12 @@ public class MainActivity extends AppCompatActivity {
         DB_HELPER = new ExpiryDbHelper(this);
         //UpdateProductList();
 
-        if(!isMyServiceRunning(ProductsService.class)){
-//            Intent intent = new Intent(this, ProductsService.class);
-//            startService(intent);
-        }
+//        if(!isMyServiceRunning(ProductsService.class)){
+////            Intent intent = new Intent(this, ProductsService.class);
+////            startService(intent);
+//        }
+
+        startProductAlarm();
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
@@ -81,6 +67,25 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
+    }
+
+    private void startProductAlarm(){
+        Intent intent = new Intent(this, ProductAlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, REQUEST_PRODCUT_ALARM,intent, PendingIntent. FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+//        alarmManager.setInexactRepeating(AlarmManager.RTC, getMilliseonsToStart(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        alarmManager.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis() + AlarmManager.INTERVAL_FIFTEEN_MINUTES, AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
+    }
+
+
+    private long getMilliseonsToStart(){
+        Date now = new Date();
+        final Calendar cal = Calendar.getInstance();
+        cal.set(now.getYear() + 1900, now.getMonth(), now.getDate() + 1, 3 ,0, 0);
+
+        final Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(new Date());
+        return cal.getTimeInMillis() - cal2.getTimeInMillis();
     }
 
 
@@ -172,13 +177,13 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    private boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(this.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    private boolean isMyServiceRunning(Class<?> serviceClass) {
+//        ActivityManager manager = (ActivityManager) getSystemService(this.ACTIVITY_SERVICE);
+//        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+//            if (serviceClass.getName().equals(service.service.getClassName())) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 }

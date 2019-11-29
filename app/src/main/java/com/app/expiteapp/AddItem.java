@@ -14,6 +14,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -68,6 +69,10 @@ public class AddItem extends ProductBaseActivity {
             loadedProduct = Product.search(MainActivity.DB_HELPER.getReadableDatabase(), ExpiryContract.ProductEntry.EAN13, EAN);
             if(loadedProduct == null){
                 ProgressDialog progress = new ProgressDialog(this);
+                final MediaPlayer mp = MediaPlayer.create(this,  R.raw.space_craft_passing_pulse_stutter);
+                if(mp != null) {
+                    mp.start();
+                }
                 progress.setTitle("Loading");
                 progress.setMessage("Wait while loading...");
                 progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
@@ -79,7 +84,8 @@ public class AddItem extends ProductBaseActivity {
                 EditText NameText = findViewById(R.id.name);
                 NameText.setText(loadedProduct.Name);
 
-                uri = Uri.parse(loadedProduct.ThumbnailSource);
+//                uri = Uri.parse(loadedProduct.ThumbnailSource);
+                uri = loadedProduct.ThumbnailSource;
                 UpdateProductPhoto();
             }
         }
@@ -110,7 +116,7 @@ public class AddItem extends ProductBaseActivity {
                         URL url = new URL(elements.select("a[class=product-photo]").select("img").attr("src"));
                         InputStream inputStream = url.openStream();
                         InputStream in = new BufferedInputStream(inputStream);
-                        File image = createImageFile(EAN);
+                        File image = createImageFile();
                         OutputStream out = new BufferedOutputStream(new FileOutputStream(image));
 
                         for ( int i; (i = in.read()) != -1; ) {
@@ -119,7 +125,7 @@ public class AddItem extends ProductBaseActivity {
                         in.close();
                         out.close();
 
-                        loadedProduct.ThumbnailSource = Uri.fromFile(image).toString();
+                        loadedProduct.ThumbnailSource = uri;//Uri.fromFile(image).toString();
                     }
                 } catch (Exception e) {
                     loadedProduct = null;

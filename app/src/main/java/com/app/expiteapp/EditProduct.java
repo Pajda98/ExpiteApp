@@ -55,7 +55,8 @@ public class EditProduct extends ProductBaseActivity {
         NotesText.setText(expiryProduct.Notes);
         ExpiryDate.setText(expiryProduct.ExpiryDate);
 
-        uri = Uri.parse(product.ThumbnailSource);
+//        uri = Uri.parse(product.ThumbnailSource);
+        uri = product.ThumbnailSource;
         UpdateProductPhoto();
     }
 
