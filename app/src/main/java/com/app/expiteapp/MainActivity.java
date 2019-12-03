@@ -71,10 +71,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void startProductAlarm(){
         Intent intent = new Intent(this, ProductAlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, REQUEST_PRODCUT_ALARM,intent, PendingIntent. FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), REQUEST_PRODCUT_ALARM, intent, PendingIntent. FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-//        alarmManager.setInexactRepeating(AlarmManager.RTC, getMilliseonsToStart(), AlarmManager.INTERVAL_DAY, pendingIntent);
-        alarmManager.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis() + AlarmManager.INTERVAL_FIFTEEN_MINUTES, AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + getMilliseonsToStart(), AlarmManager.INTERVAL_DAY, pendingIntent);
+//        alarmManager.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis() + AlarmManager.INTERVAL_FIFTEEN_MINUTES, AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
+//        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,    System.currentTimeMillis() + 10000, 20000, pendingIntent);
     }
 
 
@@ -103,7 +104,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         else if(item.getItemId() == R.id.check_notification){
-            NotificationManager nm = new NotificationManager(this);
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            NotificationManager nm = new NotificationManager(this, intent);
             nm.checkAllNotifications();
         }
 

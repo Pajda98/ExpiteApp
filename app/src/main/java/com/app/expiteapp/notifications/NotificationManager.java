@@ -5,12 +5,14 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.app.expiteapp.MainActivity;
 import com.app.expiteapp.R;
+import com.app.expiteapp.database.ExpiryDbHelper;
 import com.app.expiteapp.models.LVPItem;
 import com.app.expiteapp.models.ListViewProduct;
 import com.app.expiteapp.models.ProductGroupLevels;
@@ -21,30 +23,37 @@ import java.util.List;
 public class NotificationManager {
     String CHANNEL_ID;
     Context context;
+    Intent intent;
 
-    public NotificationManager(Context context){
+    public NotificationManager(Context context, Intent intent){
         this.context = context;
+        this.intent = intent;
+
     }
 
     public void checkAllNotifications(){
-        ProductGroupLevels levels = new ProductGroupLevels(context);
-        List<ListViewProduct> products = ListViewProduct.getList(MainActivity.DB_HELPER.getReadableDatabase());
-        int position = 0;
-        for (final ListViewProduct product: products) {
-            if(!ProductGroupLevels.InDelayCategory(product, levels.expiryDelays[0]) && ProductGroupLevels.InDelayCategory(product, levels.expiryDelays[1])) {
-                position++;
-                createNotification(
-                        product.Name,
-                        String.format(context.getResources().getString(R.string.notification_big_text), product.Name, product.ExpiryDate),
-                        position
-                        );
+        try {
+
+            ExpiryDbHelper DB_HELPER = new ExpiryDbHelper(context);
+            ProductGroupLevels levels = new ProductGroupLevels(context);
+            List<ListViewProduct> products = ListViewProduct.getList(DB_HELPER.getReadableDatabase());
+            int position = 0;
+            for (final ListViewProduct product: products) {
+                if(!ProductGroupLevels.InDelayCategory(product, levels.expiryDelays[0]) && ProductGroupLevels.InDelayCategory(product, levels.expiryDelays[1])) {
+                    position++;
+                    createNotification(
+                            product.Name,
+                            String.format(context.getResources().getString(R.string.notification_big_text), product.Name, product.ExpiryDate),
+                            position
+                            );
+                }
             }
+        }catch(Exception e){
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
     private void createNotification(String text, String bigText,int id){
-        Intent intent = new Intent(this.context, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this.context, "notify_001")

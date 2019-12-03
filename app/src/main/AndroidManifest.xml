@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_PERMISSION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
 
     <application
         android:allowBackup="true"
@@ -43,6 +44,13 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths"/>
         </provider>
+<!--        <receiver  android:process=":remote" android:name=".services.ProductAlarmReceiver"></receiver>-->
+        <receiver android:process=":remote" android:name=".services.ProductAlarmReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="mypackage.START_ALARM" >
+                </action>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
